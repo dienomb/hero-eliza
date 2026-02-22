@@ -435,8 +435,10 @@
 // ================================================================
 // ✏️  EDIT YOUR QUESTIONS HERE
 //
-//  type: "count" → big emojis she counts herself
-//  type: "read"  → text you read aloud, she taps the emoji answer
+//  type: "count"       → big emojis she counts herself
+//  type: "read"        → text you read aloud, she taps the emoji answer
+//  type: "noughts"     → tic-tac-toe board, identify patterns
+//  type: "translation" → English word, choose Spanish emoji translation
 //
 //  ok: index of correct answer  (0 = left button, 1 = middle, 2 = right)
 // ================================================================
@@ -502,6 +504,18 @@ const ALL_QUESTIONS = [
   { type:"noughts", board:"X_X|_X_|O_O", text:"¿Quién tiene más?",         a:["X","O","Iguales"],   ok:2 },
   { type:"noughts", board:"XX_|OO_|___", text:"¿Quién está ganando?",      a:["X","O","Ninguno"],   ok:0 },
   { type:"noughts", board:"X__|_OO|X_O", text:"¿Hay un ganador?",          a:["Si","No","Casi"],     ok:1 },
+
+  // ── ENGLISH TO SPANISH (10) ── find the spanish word for the english word ──────────
+  { type:"translation", english:"monkey",    text:"¿Cuál es en español?",    a:["🐘","🐒","🦁"],      ok:1 },
+  { type:"translation", english:"parrot",    text:"¿Cuál es en español?",    a:["🦜","🦁","🐘"],      ok:0 },
+  { type:"translation", english:"snake",     text:"¿Cuál es en español?",    a:["🦋","🐊","🐍"],      ok:2 },
+  { type:"translation", english:"lion",      text:"¿Cuál es en español?",    a:["🦁","🐒","🐊"],      ok:0 },
+  { type:"translation", english:"butterfly", text:"¿Cuál es en español?",    a:["🐛","🦋","🦜"],      ok:1 },
+  { type:"translation", english:"crocodile", text:"¿Cuál es en español?",    a:["🐘","🐍","🐊"],      ok:2 },
+  { type:"translation", english:"banana",    text:"¿Cuál es en español?",    a:["🥕","🍌","🌿"],      ok:1 },
+  { type:"translation", english:"tree",      text:"¿Cuál es en español?",    a:["🌳","🌿","🌸"],      ok:0 },
+  { type:"translation", english:"flower",    text:"¿Cuál es en español?",    a:["🌸","🌿","🌳"],      ok:0 },
+  { type:"translation", english:"elephant",  text:"¿Cuál es en español?",    a:["🐘","🦒","🐒"],      ok:0 },
 ];
 
 // ================================================================
@@ -642,6 +656,13 @@ function loadQuestion(qObj) {
     emojiArea.textContent = renderTicTacToe(qObj.board);
     qText.style.display = 'block';
     qText.textContent = qObj.text;
+  } else if (qObj.type === 'translation') {
+    // Display English word to translate
+    emojiArea.style.display = 'block';
+    emojiArea.style.fontSize = '48px';
+    emojiArea.textContent = qObj.english;
+    qText.style.display = 'block';
+    qText.textContent = qObj.text;
   } else {
     emojiArea.style.display = 'none';
     qText.style.display     = 'block';  // Show text, and we'll also speak it
@@ -665,26 +686,29 @@ function loadQuestion(qObj) {
 // ================================================================
 function speakQuestion(qObj) {
   let textToSpeak = '';
+  let language = 'es-ES';
 
   if (qObj.type === 'count') {
-    // For counting: "How many are there?"
     textToSpeak = '¿Cuántos hay?';
+    language = 'es-ES';
+  } else if (qObj.type === 'translation') {
+    textToSpeak = qObj.english;
+    language = 'en-US';
   } else {
-    // For reading: just speak the question
     textToSpeak = qObj.text;
+    language = 'es-ES';
   }
 
-  performSpeech(textToSpeak);
+  performSpeech(textToSpeak, language);
 }
 
-function performSpeech(textToSpeak) {
-  // Cancel any previous speech
+function performSpeech(textToSpeak, language = 'es-ES') {
   window.speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(textToSpeak);
-  utterance.lang = 'es-ES';  // Spanish language
-  utterance.rate = 0.9;      // Slightly slower for clarity
-  utterance.pitch = 1.2;     // Slightly higher pitch for kids
+  utterance.lang = language;
+  utterance.rate = 0.9;
+  utterance.pitch = 1.2;
 
   window.speechSynthesis.speak(utterance);
 }
