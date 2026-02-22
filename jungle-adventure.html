@@ -192,6 +192,30 @@
       display: none;
     }
 
+    /* Question controls */
+    #question-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    #repeat-btn {
+      padding: 8px 16px;
+      font-size: 18px;
+      font-family: inherit;
+      background: #f39c12;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      transition: transform 0.12s;
+    }
+
+    #repeat-btn:hover { transform: scale(1.1); }
+    #repeat-btn:active { transform: scale(0.93); }
+
     /* Answer buttons */
     #btns { display: flex; gap: 14px; }
 
@@ -387,6 +411,9 @@
   <div id="panel">
     <div id="emoji-area"></div>
     <div id="q-text"></div>
+    <div id="question-controls">
+      <button id="repeat-btn" onclick="repeatQuestion()">🔊 Repetir</button>
+    </div>
     <div id="btns">
       <button class="btn btn-a" onclick="answer(0)">?</button>
       <button class="btn btn-b" onclick="answer(1)">?</button>
@@ -586,7 +613,8 @@ function loadQuestion(qObj) {
     qText.style.display       = 'none';
   } else {
     emojiArea.style.display = 'none';
-    qText.style.display     = 'none';  // Hide text, we'll speak it instead
+    qText.style.display     = 'block';  // Show text, and we'll also speak it
+    qText.textContent       = qObj.text;
   }
 
   btns.forEach((btn, i) => {
@@ -605,9 +633,6 @@ function loadQuestion(qObj) {
 // TEXT-TO-SPEECH
 // ================================================================
 function speakQuestion(qObj) {
-  // Cancel any previous speech
-  window.speechSynthesis.cancel();
-
   let textToSpeak = '';
 
   if (qObj.type === 'count') {
@@ -618,12 +643,24 @@ function speakQuestion(qObj) {
     textToSpeak = qObj.text;
   }
 
+  performSpeech(textToSpeak);
+}
+
+function performSpeech(textToSpeak) {
+  // Cancel any previous speech
+  window.speechSynthesis.cancel();
+
   const utterance = new SpeechSynthesisUtterance(textToSpeak);
   utterance.lang = 'es-ES';  // Spanish language
   utterance.rate = 0.9;      // Slightly slower for clarity
   utterance.pitch = 1.2;     // Slightly higher pitch for kids
 
   window.speechSynthesis.speak(utterance);
+}
+
+function repeatQuestion() {
+  if (!state.current) return;
+  speakQuestion(state.current);
 }
 
 // ================================================================
