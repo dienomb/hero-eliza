@@ -636,8 +636,8 @@ function speakQuestion(qObj) {
   let textToSpeak = '';
 
   if (qObj.type === 'count') {
-    // For counting: "How many? [emoji count]"
-    textToSpeak = '¿Cuántos? ' + qObj.a.join(', ');
+    // For counting: "How many are there?"
+    textToSpeak = '¿Cuántos hay?';
   } else {
     // For reading: just speak the question
     textToSpeak = qObj.text;
