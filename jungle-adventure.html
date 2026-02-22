@@ -495,6 +495,13 @@ const ALL_QUESTIONS = [
   { type:"read", text:"¿Cuál es el más pequeño?",             a:["🐘","🦁","🐛"],   ok:2 },
   { type:"read", text:"¿Cuál puede cambiar de color?",        a:["🦎","🐘","🦁"],   ok:0 },
   { type:"read", text:"¿Cuál duerme colgado boca abajo?",     a:["🐊","🦁","🦇"],   ok:2 },
+
+  // ── NOUGHTS & CROSSES (5) ── identify patterns in tic-tac-toe ──────────
+  { type:"noughts", board:"XXO|XXO|___", text:"¿Quién gana?",                a:["X","O","Nadie"],    ok:0 },
+  { type:"noughts", board:"OOO|___|___", text:"¿Quién gana?",                a:["X","O","Nadie"],    ok:1 },
+  { type:"noughts", board:"X_X|_X_|O_O", text:"¿Quién tiene más?",         a:["X","O","Iguales"],   ok:2 },
+  { type:"noughts", board:"XX_|OO_|___", text:"¿Quién está ganando?",      a:["X","O","Ninguno"],   ok:0 },
+  { type:"noughts", board:"X__|_OO|X_O", text:"¿Hay un ganador?",          a:["Si","No","Casi"],     ok:1 },
 ];
 
 // ================================================================
@@ -595,6 +602,23 @@ function robotSVG() {
 // ================================================================
 // QUESTION DISPLAY
 // ================================================================
+function renderTicTacToe(boardString) {
+  // Parse board string: "XXO|XXO|___"
+  const rows = boardString.split('|');
+  let display = '';
+
+  rows.forEach(row => {
+    row.split('').forEach(cell => {
+      if (cell === 'X') display += '❌ ';
+      else if (cell === 'O') display += '⭕ ';
+      else display += '⬜ ';
+    });
+    display += '\n';
+  });
+
+  return display;
+}
+
 function loadQuestion(qObj) {
   state.current = qObj;
 
@@ -611,6 +635,13 @@ function loadQuestion(qObj) {
     emojiArea.style.fontSize  = fontSize + 'px';
     emojiArea.textContent     = qObj.emojis;
     qText.style.display       = 'none';
+  } else if (qObj.type === 'noughts') {
+    // Display tic-tac-toe board
+    emojiArea.style.display = 'block';
+    emojiArea.style.fontSize = '36px';
+    emojiArea.textContent = renderTicTacToe(qObj.board);
+    qText.style.display = 'block';
+    qText.textContent = qObj.text;
   } else {
     emojiArea.style.display = 'none';
     qText.style.display     = 'block';  // Show text, and we'll also speak it
@@ -675,9 +706,11 @@ function answer(idx) {
 
   if (idx === state.current.ok) {
     btns[idx].classList.add('flash-ok');
+    playWinSound();
     setTimeout(onCorrect, 600);
   } else {
     btns[idx].classList.add('flash-no');
+    playLoseSound();
     shakeHero();
     setTimeout(() => {
       loadQuestion(state.current);
@@ -781,6 +814,7 @@ function resetHero() {
 // ================================================================
 function celebrate() {
   document.getElementById('hero').classList.add('celebrate');
+  playVictorySound();
   spawnConfetti();
 }
 
@@ -825,6 +859,77 @@ function shuffle(arr) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+// ================================================================
+// SOUND EFFECTS
+// ================================================================
+function playLoseSound() {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+
+    osc.frequency.setValueAtTime(200, audioContext.currentTime);
+    osc.frequency.setValueAtTime(100, audioContext.currentTime + 0.2);
+    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gain.gain.setValueAtTime(0, audioContext.currentTime + 0.2);
+
+    osc.start(audioContext.currentTime);
+    osc.stop(audioContext.currentTime + 0.2);
+  } catch (e) {
+    // Silently fail if Web Audio API not available
+  }
+}
+
+function playWinSound() {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+
+    osc.frequency.setValueAtTime(523, audioContext.currentTime);
+    osc.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gain.gain.setValueAtTime(0, audioContext.currentTime + 0.2);
+
+    osc.start(audioContext.currentTime);
+    osc.stop(audioContext.currentTime + 0.2);
+  } catch (e) {
+    // Silently fail if Web Audio API not available
+  }
+}
+
+function playVictorySound() {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    const notes = [523, 659, 784, 1046]; // C, E, G, C (higher octave)
+    const duration = 0.15;
+
+    notes.forEach((freq, i) => {
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.frequency.setValueAtTime(freq, audioContext.currentTime + i * duration);
+      gain.gain.setValueAtTime(0.2, audioContext.currentTime + i * duration);
+      gain.gain.setValueAtTime(0, audioContext.currentTime + i * duration + duration);
+
+      osc.start(audioContext.currentTime + i * duration);
+      osc.stop(audioContext.currentTime + i * duration + duration);
+    });
+  } catch (e) {
+    // Silently fail if Web Audio API not available
+  }
 }
 
 // ================================================================
