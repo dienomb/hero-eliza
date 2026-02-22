@@ -586,8 +586,7 @@ function loadQuestion(qObj) {
     qText.style.display       = 'none';
   } else {
     emojiArea.style.display = 'none';
-    qText.style.display     = 'block';
-    qText.textContent       = qObj.text;
+    qText.style.display     = 'none';  // Hide text, we'll speak it instead
   }
 
   btns.forEach((btn, i) => {
@@ -597,6 +596,34 @@ function loadQuestion(qObj) {
     // Make emoji answers bigger
     btn.style.fontSize = (qObj.type === 'read' && qObj.a[i].length <= 4) ? '36px' : '26px';
   });
+
+  // Speak the question aloud
+  speakQuestion(qObj);
+}
+
+// ================================================================
+// TEXT-TO-SPEECH
+// ================================================================
+function speakQuestion(qObj) {
+  // Cancel any previous speech
+  window.speechSynthesis.cancel();
+
+  let textToSpeak = '';
+
+  if (qObj.type === 'count') {
+    // For counting: "How many? [emoji count]"
+    textToSpeak = '¿Cuántos? ' + qObj.a.join(', ');
+  } else {
+    // For reading: just speak the question
+    textToSpeak = qObj.text;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(textToSpeak);
+  utterance.lang = 'es-ES';  // Spanish language
+  utterance.rate = 0.9;      // Slightly slower for clarity
+  utterance.pitch = 1.2;     // Slightly higher pitch for kids
+
+  window.speechSynthesis.speak(utterance);
 }
 
 // ================================================================
