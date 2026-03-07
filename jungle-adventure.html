@@ -584,13 +584,6 @@ const ALL_QUESTIONS = [
   { type:"read", text:"¿Cuál puede cambiar de color?",        a:["🦎","🐘","🦁"],   ok:0 },
   { type:"read", text:"¿Cuál duerme colgado boca abajo?",     a:["🐊","🦁","🦇"],   ok:2 },
 
-  // ── NOUGHTS & CROSSES (5) ── identify patterns in tic-tac-toe ──────────
-  { type:"noughts", board:"XXO|XXO|___", text:"¿Quién gana?",                a:["X","O","Nadie"],    ok:0 },
-  { type:"noughts", board:"OOO|___|___", text:"¿Quién gana?",                a:["X","O","Nadie"],    ok:1 },
-  { type:"noughts", board:"X_X|_X_|O_O", text:"¿Quién tiene más?",         a:["X","O","Iguales"],   ok:2 },
-  { type:"noughts", board:"XX_|OO_|___", text:"¿Quién está ganando?",      a:["X","O","Ninguno"],   ok:0 },
-  { type:"noughts", board:"X__|_OO|X_O", text:"¿Hay un ganador?",          a:["Si","No","Casi"],     ok:1 },
-
   // ── ENGLISH TO SPANISH (10) ── find the spanish word for the english word ──────────
   { type:"translation", english:"monkey",    text:"¿Cuál es en español?",    a:["🐘","🐒","🦁"],      ok:1 },
   { type:"translation", english:"parrot",    text:"¿Cuál es en español?",    a:["🦜","🦁","🐘"],      ok:0 },
@@ -608,36 +601,41 @@ const ALL_QUESTIONS = [
   { type:"translation", english:"dog",       text:"¿Cuál es en español?",    a:["🐱","🐭","🐶"],      ok:2 },
   { type:"translation", english:"dolphin",   text:"¿Cuál es en español?",    a:["🐋","🐬","🦈"],      ok:1 },
 
-  // ── ENGLISH COLORS (10) ── see the color and pick its English name ──────────
-  { type:"color", emoji:"🔴", spanish:"rojo",     a:["red",    "blue",   "green"],   ok:0 },
-  { type:"color", emoji:"🔵", spanish:"azul",     a:["blue",   "red",    "yellow"],  ok:0 },
-  { type:"color", emoji:"🟢", spanish:"verde",    a:["purple", "green",  "red"],     ok:1 },
-  { type:"color", emoji:"🟡", spanish:"amarillo", a:["yellow", "green",  "blue"],    ok:0 },
-  { type:"color", emoji:"🟣", spanish:"morado",   a:["pink",   "blue",   "purple"],  ok:2 },
-  { type:"color", emoji:"🟠", spanish:"naranja",  a:["red",    "orange", "yellow"],  ok:1 },
-  { type:"color", emoji:"⚪", spanish:"blanco",   a:["black",  "pink",   "white"],   ok:2 },
-  { type:"color", emoji:"⚫", spanish:"negro",    a:["black",  "white",  "grey"],    ok:0 },
-  { type:"color", emoji:"🩷", spanish:"rosa",     a:["pink",   "red",    "purple"],  ok:0 },
-  { type:"color", emoji:"🟤", spanish:"marrón",   a:["orange", "black",  "brown"],   ok:2 },
+  // ── ENGLISH COLORS (10) ── hear the English color name, pick the matching circle ──
+  { type:"color", emoji:"🔴", english:"red",    a:["🔴","🔵","🟢"], ok:0 },
+  { type:"color", emoji:"🔵", english:"blue",   a:["🔵","🔴","🟡"], ok:0 },
+  { type:"color", emoji:"🟢", english:"green",  a:["🟣","🟢","🔴"], ok:1 },
+  { type:"color", emoji:"🟡", english:"yellow", a:["🟡","🟢","🔵"], ok:0 },
+  { type:"color", emoji:"🟣", english:"purple", a:["🩷","🔵","🟣"], ok:2 },
+  { type:"color", emoji:"🟠", english:"orange", a:["🔴","🟠","🟡"], ok:1 },
+  { type:"color", emoji:"⚪", english:"white",  a:["⚫","🩷","⚪"],  ok:2 },
+  { type:"color", emoji:"⚫", english:"black",  a:["⚫","⚪","🟤"],  ok:0 },
+  { type:"color", emoji:"🩷", english:"pink",   a:["🩷","🔴","🟣"],  ok:0 },
+  { type:"color", emoji:"🟤", english:"brown",  a:["🟠","⚫","🟤"],  ok:2 },
 
-  // ── ENGLISH BODY PARTS (8) ── see the body part and pick English name ───────
-  { type:"bodypart", emoji:"👁️", spanish:"ojo",    a:["eye",   "ear",  "nose"],  ok:0 },
-  { type:"bodypart", emoji:"👂",  spanish:"oreja",  a:["mouth", "ear",  "eye"],   ok:1 },
-  { type:"bodypart", emoji:"👃",  spanish:"nariz",  a:["nose",  "hand", "foot"],  ok:0 },
-  { type:"bodypart", emoji:"👅",  spanish:"boca",   a:["ear",   "mouth","nose"],  ok:1 },
-  { type:"bodypart", emoji:"✋",  spanish:"mano",   a:["hand",  "foot", "arm"],   ok:0 },
-  { type:"bodypart", emoji:"🦶",  spanish:"pie",    a:["knee",  "hand", "foot"],  ok:2 },
-  { type:"bodypart", emoji:"💪",  spanish:"brazo",  a:["leg",   "arm",  "head"],  ok:1 },
-  { type:"bodypart", emoji:"🦵",  spanish:"pierna", a:["arm",   "hand", "leg"],   ok:2 },
+  // ── ENGLISH BODY PARTS (8) ── hear the English word, pick the matching body part ──
+  { type:"bodypart", emoji:"👁️", english:"eye",   a:["👁️","👂","👃"], ok:0 },
+  { type:"bodypart", emoji:"👂",  english:"ear",   a:["👅","👂","👁️"], ok:1 },
+  { type:"bodypart", emoji:"👃",  english:"nose",  a:["👃","✋","🦶"],  ok:0 },
+  { type:"bodypart", emoji:"👅",  english:"mouth", a:["👂","👅","👃"],  ok:1 },
+  { type:"bodypart", emoji:"✋",  english:"hand",  a:["✋","🦶","💪"],  ok:0 },
+  { type:"bodypart", emoji:"🦶",  english:"foot",  a:["🦵","✋","🦶"],  ok:2 },
+  { type:"bodypart", emoji:"💪",  english:"arm",   a:["💪","🦵","✋"],  ok:0 },
+  { type:"bodypart", emoji:"🦵",  english:"leg",   a:["✋","💪","🦵"],  ok:2 },
 
-  // ── ENGLISH NUMBER NAMES (7) ── count the stars and pick English number ─────
-  { type:"numbername", count:1, a:["one",   "two",   "three"], ok:0 },
-  { type:"numbername", count:2, a:["three", "two",   "one"],   ok:1 },
-  { type:"numbername", count:3, a:["two",   "four",  "three"], ok:2 },
-  { type:"numbername", count:4, a:["four",  "three", "six"],   ok:0 },
-  { type:"numbername", count:5, a:["six",   "five",  "four"],  ok:1 },
-  { type:"numbername", count:6, a:["five",  "six",   "seven"], ok:1 },
-  { type:"numbername", count:7, a:["eight", "nine",  "seven"], ok:2 },
+  // ── EXTRA TRANSLATIONS (12) ── hear English word, pick matching emoji ─────────
+  { type:"translation", english:"star",       a:["⭐","🌙","☀️"],  ok:0 },
+  { type:"translation", english:"sun",        a:["🌙","⭐","☀️"],  ok:2 },
+  { type:"translation", english:"moon",       a:["🌙","☀️","⭐"],  ok:0 },
+  { type:"translation", english:"rainbow",    a:["🌈","⭐","🌸"],  ok:0 },
+  { type:"translation", english:"heart",      a:["💛","❤️","💜"],  ok:1 },
+  { type:"translation", english:"strawberry", a:["🍓","🍎","🍇"],  ok:0 },
+  { type:"translation", english:"cake",       a:["🍕","🎂","🍦"],  ok:1 },
+  { type:"translation", english:"ball",       a:["⚽","🎀","🎈"],  ok:0 },
+  { type:"translation", english:"book",       a:["📚","🎵","✏️"],  ok:0 },
+  { type:"translation", english:"house",      a:["🌳","🏠","⛺"],  ok:1 },
+  { type:"translation", english:"bear",       a:["🐻","🐰","🐱"],  ok:0 },
+  { type:"translation", english:"penguin",    a:["🦁","🐧","🐳"],  ok:1 },
 ];
 
 // ================================================================
@@ -771,51 +769,33 @@ function loadQuestion(qObj) {
     emojiArea.style.fontSize  = fontSize + 'px';
     emojiArea.textContent     = qObj.emojis;
     qText.style.display       = 'none';
-  } else if (qObj.type === 'noughts') {
-    // Display tic-tac-toe board
-    emojiArea.style.display = 'block';
-    emojiArea.style.fontSize = '36px';
-    emojiArea.textContent = renderTicTacToe(qObj.board);
-    qText.style.display = 'block';
-    qText.textContent = qObj.text;
   } else if (qObj.type === 'translation') {
-    // Display English word to translate
+    // Show speaker cue — child listens and picks matching emoji button
     emojiArea.style.display = 'block';
-    emojiArea.style.fontSize = '48px';
-    emojiArea.textContent = qObj.english;
-    qText.style.display = 'block';
-    qText.textContent = qObj.text;
+    emojiArea.style.fontSize = '72px';
+    emojiArea.textContent = '🔊';
+    qText.style.display = 'none';
   } else if (qObj.type === 'color') {
+    emojiArea.style.display = 'block';
+    emojiArea.style.fontSize = '80px';
+    emojiArea.textContent = qObj.emoji;
+    qText.style.display = 'none';
+  } else if (qObj.type === 'bodypart') {
     emojiArea.style.display = 'block';
     emojiArea.style.fontSize = '72px';
     emojiArea.textContent = qObj.emoji;
-    qText.style.display = 'block';
-    qText.textContent = '¿Qué color es en inglés? (= ' + qObj.spanish + ')';
-  } else if (qObj.type === 'bodypart') {
-    emojiArea.style.display = 'block';
-    emojiArea.style.fontSize = '64px';
-    emojiArea.textContent = qObj.emoji;
-    qText.style.display = 'block';
-    qText.textContent = 'En inglés, ' + qObj.spanish + ' se dice...';
-  } else if (qObj.type === 'numbername') {
-    emojiArea.style.display = 'block';
-    emojiArea.style.fontSize = '40px';
-    emojiArea.textContent = '🌟'.repeat(qObj.count);
-    qText.style.display = 'block';
-    qText.textContent = '¿Cómo se dice ' + qObj.count + ' en inglés?';
+    qText.style.display = 'none';
   } else {
     emojiArea.style.display = 'none';
     qText.style.display     = 'block';  // Show text, and we'll also speak it
     qText.textContent       = qObj.text;
   }
 
-  const isWordBtn = ['color', 'bodypart', 'numbername'].includes(qObj.type);
   btns.forEach((btn, i) => {
     btn.textContent = qObj.a[i];
     btn.disabled    = false;
     btn.className   = 'btn btn-' + ['a', 'b', 'c'][i];
-    // Size: word answers smaller, emoji answers bigger
-    btn.style.fontSize = isWordBtn ? '22px' : (qObj.type === 'read' && qObj.a[i].length <= 4) ? '36px' : '26px';
+    btn.style.fontSize = (qObj.type === 'count') ? '36px' : '44px';
   });
 
   // Speak the question aloud
@@ -832,19 +812,9 @@ function speakQuestion(qObj) {
   if (qObj.type === 'count') {
     textToSpeak = '¿Cuántos hay?';
     language = 'es-ES';
-  } else if (qObj.type === 'translation') {
+  } else if (qObj.type === 'translation' || qObj.type === 'color' || qObj.type === 'bodypart') {
     textToSpeak = qObj.english;
     language = 'en-US';
-  } else if (qObj.type === 'color') {
-    textToSpeak = '¿Qué color es en inglés? ' + qObj.spanish;
-    language = 'es-ES';
-  } else if (qObj.type === 'bodypart') {
-    textToSpeak = 'En inglés, ' + qObj.spanish + ' se dice...';
-    language = 'es-ES';
-  } else if (qObj.type === 'numbername') {
-    const esNums = ['','uno','dos','tres','cuatro','cinco','seis','siete'];
-    textToSpeak = '¿Cómo se dice ' + esNums[qObj.count] + ' en inglés?';
-    language = 'es-ES';
   } else {
     textToSpeak = qObj.text;
     language = 'es-ES';
