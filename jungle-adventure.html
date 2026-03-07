@@ -5,11 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aventura en la Selva</title>
   <style>
+    :root {
+      --sky-top: #ffe4b5;  --sky-mid: #87ceeb;  --sky-bottom: #b5e8b5;
+      --jungle-dark: #1a3d08;  --jungle-mid: #2a5c12;  --jungle-light: #3a7020;
+      --gold: #FFD700;  --gold-dark: #c8860a;
+      --pink: #ff69b4;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
-      background: #0d2b0d;
+      background: radial-gradient(ellipse at center, #1a4a0a 0%, #050d05 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -22,7 +29,15 @@
       position: relative;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 0 50px rgba(0,0,0,0.7);
+      box-shadow: 0 0 70px rgba(0,0,0,0.85),
+                  0 0 40px rgba(255,105,180,0.15),
+                  inset 0 0 0 3px rgba(255,215,0,0.25);
+      animation: gameIn 0.7s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes gameIn {
+      from { opacity: 0; transform: scale(0.94); }
+      to   { opacity: 1; transform: scale(1); }
     }
 
     /* ===== WORLD ===== */
@@ -30,8 +45,21 @@
       width: 100%;
       height: 63%;
       position: relative;
-      background: linear-gradient(180deg, #87CEEB 0%, #b5e8b5 55%, #4a8a20 100%);
+      background: linear-gradient(180deg, #ffe4b5 0%, #87ceeb 38%, #b5e8b5 65%, #4a8a20 100%);
       overflow: hidden;
+    }
+
+    /* ===== CLOUDS ===== */
+    .cloud {
+      position: absolute;
+      left: -80px;
+      opacity: 0.75;
+      pointer-events: none;
+      animation: drift linear infinite;
+    }
+    @keyframes drift {
+      from { transform: translateX(-120px); }
+      to   { transform: translateX(960px); }
     }
 
     .tree {
@@ -45,14 +73,14 @@
     #ground {
       position: absolute;
       bottom: 0; width: 100%; height: 48px;
-      background: linear-gradient(180deg, #7B5B2A 0%, #5a3f15 100%);
+      background: linear-gradient(180deg, #8B6914 0%, #5a3f15 55%, #3d2a0e 100%);
     }
 
     #road {
       position: absolute;
       bottom: 12px; width: 100%; height: 28px;
-      background: #c4922a;
-      border-top: 2px solid #d4a835;
+      background: linear-gradient(180deg, #d4a03a, #b87a20);
+      border-top: 2px solid #f0c040;
     }
 
     #road::after {
@@ -66,16 +94,19 @@
     #coin-counter {
       position: absolute;
       top: 8px; left: 10px;
-      background: rgba(0,0,0,0.45);
+      background: linear-gradient(135deg, #ffd700, #ff9500);
+      border: 2px solid rgba(255,255,255,0.5);
       border-radius: 20px;
       padding: 5px 14px;
-      color: #FFD700;
+      color: #3d1f00;
       font-size: 22px;
       font-weight: bold;
       z-index: 10;
       display: flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 2px 14px rgba(255,165,0,0.65), inset 0 1px 0 rgba(255,255,255,0.4);
+      text-shadow: 0 1px 2px rgba(255,255,255,0.4);
     }
 
     /* ===== HERO (rider on horse) ===== */
@@ -153,7 +184,7 @@
     #panel {
       width: 100%;
       height: 37%;
-      background: linear-gradient(180deg, #1b4a0a, #2e6b1c);
+      background: linear-gradient(180deg, #1a3d08 0%, #2a5c12 50%, #1a3d08 100%);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -161,10 +192,11 @@
       gap: 10px;
       padding: 6px 20px;
       position: relative;
+      box-shadow: inset 0 4px 16px rgba(0,0,0,0.4);
     }
 
     #panel::before {
-      content: '🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿';
+      content: '🌸🌿🌺🌿🌸🌿🌺🌿🌸🌿🌺🌿🌸🌿🌺🌿🌸🌿🌺🌿🌸🌿🌺🌿';
       position: absolute;
       top: -4px; left: 0;
       font-size: 14px;
@@ -186,10 +218,12 @@
     /* Parent-read text */
     #q-text {
       color: white;
-      font-size: 24px;
+      font-size: 25px;
       text-align: center;
       max-width: 700px;
       display: none;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      letter-spacing: 0.3px;
     }
 
     /* Question controls */
@@ -204,17 +238,19 @@
       padding: 8px 16px;
       font-size: 18px;
       font-family: inherit;
-      background: #f39c12;
+      background: linear-gradient(135deg, #fdcb6e, #e17055);
       border: none;
       border-radius: 12px;
       cursor: pointer;
       color: white;
       font-weight: bold;
-      transition: transform 0.12s;
+      transition: transform 0.1s, box-shadow 0.1s;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25), 0 6px 12px rgba(0,0,0,0.15);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
-    #repeat-btn:hover { transform: scale(1.1); }
-    #repeat-btn:active { transform: scale(0.93); }
+    #repeat-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.25), 0 8px 16px rgba(0,0,0,0.18); }
+    #repeat-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.25); }
 
     /* Answer buttons */
     #btns { display: flex; gap: 14px; }
@@ -226,27 +262,35 @@
       font-family: inherit;
       font-weight: bold;
       border: none;
-      border-radius: 18px;
+      border-radius: 22px;
       cursor: pointer;
       color: white;
-      transition: transform 0.12s;
+      transition: transform 0.1s, box-shadow 0.1s;
       text-align: center;
       line-height: 1.2;
+      box-shadow: 0 7px 0 rgba(0,0,0,0.28), 0 10px 20px rgba(0,0,0,0.18);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.35);
     }
 
-    .btn:hover:not(:disabled) { transform: scale(1.1); }
-    .btn:active:not(:disabled) { transform: scale(0.93); }
+    .btn:hover:not(:disabled) {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 10px 0 rgba(0,0,0,0.28), 0 14px 24px rgba(0,0,0,0.2);
+    }
+    .btn:active:not(:disabled) {
+      transform: translateY(5px) scale(0.97);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.28);
+    }
     .btn:disabled { cursor: default; }
 
-    .btn-a { background: #e74c3c; }
-    .btn-b { background: #27ae60; }
-    .btn-c { background: #2980b9; }
+    .btn-a { background: linear-gradient(160deg, #ff6b6b, #d63031); }
+    .btn-b { background: linear-gradient(160deg, #55efc4, #00b894); }
+    .btn-c { background: linear-gradient(160deg, #74b9ff, #0984e3); }
 
     .btn.flash-ok { animation: flashOk 0.5s ease; }
     .btn.flash-no { animation: flashNo 0.5s ease; }
 
-    @keyframes flashOk { 50% { background: #f1c40f; transform: scale(1.15); } }
-    @keyframes flashNo { 50% { background: #922b21; transform: scale(0.9);  } }
+    @keyframes flashOk { 50% { background: linear-gradient(160deg, #f9ca24, #f0932b); transform: translateY(-3px) scale(1.15); } }
+    @keyframes flashNo { 50% { background: linear-gradient(160deg, #922b21, #6b0000); transform: translateY(5px) scale(0.9);  } }
 
     /* ===== WIN SCREEN ===== */
     #win-screen {
@@ -257,25 +301,29 @@
       align-items: center;
       gap: 16px;
       z-index: 50;
-      background: rgba(39,174,96,0.94);
+      background: linear-gradient(135deg, rgba(255,105,180,0.96) 0%, rgba(39,174,96,0.96) 100%);
+      backdrop-filter: blur(4px);
     }
 
-    #win-screen h1       { font-size: 48px; color: white; text-shadow: 2px 2px 8px #0004; }
+    #win-screen h1       { font-size: 48px; color: white; text-shadow: 2px 2px 12px rgba(0,0,0,0.3); }
     #win-screen .reward  { font-size: 44px; }
-    #win-screen p        { font-size: 22px; color: white; }
+    #win-screen p        { font-size: 22px; color: white; text-shadow: 0 1px 4px rgba(0,0,0,0.3); }
 
     #win-screen .play-btn {
       padding: 14px 44px;
       font-size: 22px;
       font-family: inherit;
-      background: white;
+      background: linear-gradient(135deg, #ffd700, #ff9500);
       border: none;
       border-radius: 16px;
       cursor: pointer;
       font-weight: bold;
-      transition: transform 0.1s;
+      color: #3d1f00;
+      box-shadow: 0 5px 0 rgba(0,0,0,0.2), 0 8px 16px rgba(0,0,0,0.15);
+      transition: transform 0.1s, box-shadow 0.1s;
     }
-    #win-screen .play-btn:hover { transform: scale(1.07); }
+    #win-screen .play-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 7px 0 rgba(0,0,0,0.2); }
+    #win-screen .play-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
 
     /* ===== CONFETTI ===== */
     .confetti {
@@ -289,6 +337,20 @@
       from { opacity: 1; transform: translateY(-20px) rotate(0deg); }
       to   { opacity: 0; transform: translateY(620px) rotate(720deg); }
     }
+
+    /* ===== ENCOURAGEMENT ===== */
+    .encouragement {
+      position: absolute;
+      font-size: 2em;
+      font-weight: bold;
+      color: #FFD700;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.5), 0 0 12px #ff69b4;
+      pointer-events: none;
+      animation: floatUp 1.5s ease forwards;
+      z-index: 30;
+      bottom: 42%;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -297,6 +359,11 @@
 
   <!-- ===== WORLD ===== -->
   <div id="world">
+
+    <!-- Clouds -->
+    <span class="cloud" style="top:12px; animation-duration:28s;             font-size:40px;">☁️</span>
+    <span class="cloud" style="top:30px; animation-duration:20s; animation-delay:-9s;  font-size:28px;">☁️</span>
+    <span class="cloud" style="top:8px;  animation-duration:35s; animation-delay:-17s; font-size:34px;">☁️</span>
 
     <!-- Jungle trees -->
     <span class="tree" style="left:3%">🌴</span>
@@ -308,6 +375,17 @@
     <span class="tree" style="left:63%">🌴</span>
     <span class="tree" style="left:73%">🌳</span>
     <span class="tree" style="left:84%">🌴</span>
+
+    <!-- Girl-friendly decorations -->
+    <span style="position:absolute;bottom:115px;left:7%;  font-size:22px;opacity:0.80;pointer-events:none;">🌸</span>
+    <span style="position:absolute;bottom:135px;left:17%; font-size:20px;opacity:0.80;pointer-events:none;">🦋</span>
+    <span style="position:absolute;bottom:122px;left:28%; font-size:22px;opacity:0.80;pointer-events:none;">🌸</span>
+    <span style="position:absolute;bottom:145px;left:38%; font-size:20px;opacity:0.70;pointer-events:none;">🌈</span>
+    <span style="position:absolute;bottom:118px;left:49%; font-size:22px;opacity:0.80;pointer-events:none;">🦋</span>
+    <span style="position:absolute;bottom:130px;left:60%; font-size:20px;opacity:0.80;pointer-events:none;">🌸</span>
+    <span style="position:absolute;bottom:140px;left:71%; font-size:22px;opacity:0.75;pointer-events:none;">🌟</span>
+    <span style="position:absolute;bottom:120px;left:82%; font-size:20px;opacity:0.80;pointer-events:none;">🦋</span>
+    <span style="position:absolute;bottom:125px;left:91%; font-size:22px;opacity:0.80;pointer-events:none;">🌸</span>
 
     <!-- Coin counter -->
     <div id="coin-counter">🪙 <span id="coin-count">0</span></div>
@@ -449,27 +527,27 @@ const ALL_QUESTIONS = [
   { type:"count", emojis:"🦜🦜🦜🦜🦜",                                                                         a:["4","5","6"],      ok:1 },
   { type:"count", emojis:"🍌🍌🍌🍌🍌🍌🍌",                                                                     a:["6","7","8"],      ok:1 },
   { type:"count", emojis:"🐍🐍🐍🐍🐍🐍🐍🐍🐍",                                                                 a:["8","9","10"],     ok:1 },
-  { type:"count", emojis:"🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋",                                                         a:["11","12","13"],   ok:1 },
-  { type:"count", emojis:"🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘",                                                     a:["13","14","15"],   ok:1 },
-  { type:"count", emojis:"🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺",                                               a:["15","16","17"],   ok:2 },
-  { type:"count", emojis:"🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎🦎",                                         a:["18","19","20"],   ok:1 },
+  { type:"count", emojis:"🌸🌸🌸🌸🌸",                                                                         a:["4","5","6"],      ok:1 },
+  { type:"count", emojis:"🦋🦋🦋🦋🦋🦋🦋",                                                                     a:["6","7","8"],      ok:1 },
+  { type:"count", emojis:"🌟🌟🌟🌟🌟🌟🌟🌟🌟",                                                                 a:["8","9","10"],     ok:1 },
+  { type:"count", emojis:"🎀🎀🎀",                                                                               a:["2","3","4"],      ok:1 },
   { type:"count", emojis:"🦁🦁🦁🦁",                                                                           a:["3","4","5"],      ok:1 },
   { type:"count", emojis:"🌴🌴🌴🌴🌴🌴",                                                                       a:["5","6","7"],      ok:1 },
   { type:"count", emojis:"🐆🐆🐆🐆🐆🐆🐆🐆",                                                                   a:["7","8","9"],      ok:1 },
   { type:"count", emojis:"🦜🦜🦜🦜🦜🦜🦜🦜🦜🦜",                                                             a:["9","10","11"],    ok:1 },
-  { type:"count", emojis:"🐊🐊🐊🐊🐊🐊🐊🐊🐊🐊🐊",                                                           a:["10","11","12"],   ok:1 },
-  { type:"count", emojis:"🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸",                                                       a:["12","13","14"],   ok:1 },
-  { type:"count", emojis:"🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒",                                                   a:["14","15","16"],   ok:1 },
-  { type:"count", emojis:"🍌🍌🍌🍌🍌🍌🍌🍌🍌🍌🍌🍌🍌🍌🍌🍌",                                                 a:["15","16","17"],   ok:1 },
-  { type:"count", emojis:"🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋",                                           a:["17","18","19"],   ok:1 },
-  { type:"count", emojis:"🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍🐍",                                       a:["18","19","20"],   ok:2 },
+  { type:"count", emojis:"🌈🌈🌈🌈",                                                                           a:["3","4","5"],      ok:1 },
+  { type:"count", emojis:"🦄🦄🦄🦄🦄🦄",                                                                       a:["5","6","7"],      ok:1 },
+  { type:"count", emojis:"🌺🌺🌺🌺🌺🌺🌺🌺",                                                                   a:["7","8","9"],      ok:1 },
+  { type:"count", emojis:"💕💕💕💕💕💕💕💕💕💕",                                                               a:["9","10","11"],    ok:1 },
+  { type:"count", emojis:"🌸",                                                                                   a:["1","2","3"],      ok:0 },
+  { type:"count", emojis:"🦋🦋",                                                                                 a:["1","2","3"],      ok:1 },
   { type:"count", emojis:"🦓🦓",                                                                               a:["1","2","3"],      ok:1 },
   { type:"count", emojis:"🌿🌿🌿🌿🌿🌿🌿",                                                                     a:["6","7","8"],      ok:1 },
   { type:"count", emojis:"🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸",                                                             a:["9","10","11"],    ok:1 },
-  { type:"count", emojis:"🦩🦩🦩🦩🦩🦩🦩🦩🦩🦩🦩🦩🦩🦩",                                                   a:["13","14","15"],   ok:1 },
-  { type:"count", emojis:"🦜🦜🦜🦜🦜🦜🦜🦜🦜🦜🦜🦜🦜🦜🦜🦜",                                               a:["15","16","17"],   ok:1 },
-  { type:"count", emojis:"🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘🐘",                                           a:["17","18","19"],   ok:1 },
-  { type:"count", emojis:"🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒🐒",                                       a:["18","19","20"],   ok:2 },
+  { type:"count", emojis:"🐱🐱🐱",                                                                           a:["2","3","4"],      ok:1 },
+  { type:"count", emojis:"🐰🐰🐰🐰🐰",                                                                         a:["4","5","6"],      ok:1 },
+  { type:"count", emojis:"🌙🌙🌙🌙🌙🌙🌙",                                                                     a:["6","7","8"],      ok:1 },
+  { type:"count", emojis:"🎀🎀🎀🎀🎀🎀🎀🎀🎀",                                                               a:["8","9","10"],     ok:1 },
 
   // ── PARENT READS (25) ── you read it, she taps the right emoji ──────────
   { type:"read", text:"¿Cuál tiene trompa?",                  a:["🐒","🐘","🦜"],   ok:1 },
@@ -516,6 +594,42 @@ const ALL_QUESTIONS = [
   { type:"translation", english:"tree",      text:"¿Cuál es en español?",    a:["🌳","🌿","🌸"],      ok:0 },
   { type:"translation", english:"flower",    text:"¿Cuál es en español?",    a:["🌸","🌿","🌳"],      ok:0 },
   { type:"translation", english:"elephant",  text:"¿Cuál es en español?",    a:["🐘","🦒","🐒"],      ok:0 },
+  { type:"translation", english:"cat",       text:"¿Cuál es en español?",    a:["🐱","🐶","🐰"],      ok:0 },
+  { type:"translation", english:"rabbit",    text:"¿Cuál es en español?",    a:["🐶","🐰","🦁"],      ok:1 },
+  { type:"translation", english:"unicorn",   text:"¿Cuál es en español?",    a:["🦄","🐴","🐑"],      ok:0 },
+  { type:"translation", english:"dog",       text:"¿Cuál es en español?",    a:["🐱","🐭","🐶"],      ok:2 },
+  { type:"translation", english:"dolphin",   text:"¿Cuál es en español?",    a:["🐋","🐬","🦈"],      ok:1 },
+
+  // ── ENGLISH COLORS (10) ── see the color and pick its English name ──────────
+  { type:"color", emoji:"🔴", spanish:"rojo",     a:["red",    "blue",   "green"],   ok:0 },
+  { type:"color", emoji:"🔵", spanish:"azul",     a:["blue",   "red",    "yellow"],  ok:0 },
+  { type:"color", emoji:"🟢", spanish:"verde",    a:["purple", "green",  "red"],     ok:1 },
+  { type:"color", emoji:"🟡", spanish:"amarillo", a:["yellow", "green",  "blue"],    ok:0 },
+  { type:"color", emoji:"🟣", spanish:"morado",   a:["pink",   "blue",   "purple"],  ok:2 },
+  { type:"color", emoji:"🟠", spanish:"naranja",  a:["red",    "orange", "yellow"],  ok:1 },
+  { type:"color", emoji:"⚪", spanish:"blanco",   a:["black",  "pink",   "white"],   ok:2 },
+  { type:"color", emoji:"⚫", spanish:"negro",    a:["black",  "white",  "grey"],    ok:0 },
+  { type:"color", emoji:"🩷", spanish:"rosa",     a:["pink",   "red",    "purple"],  ok:0 },
+  { type:"color", emoji:"🟤", spanish:"marrón",   a:["orange", "black",  "brown"],   ok:2 },
+
+  // ── ENGLISH BODY PARTS (8) ── see the body part and pick English name ───────
+  { type:"bodypart", emoji:"👁️", spanish:"ojo",    a:["eye",   "ear",  "nose"],  ok:0 },
+  { type:"bodypart", emoji:"👂",  spanish:"oreja",  a:["mouth", "ear",  "eye"],   ok:1 },
+  { type:"bodypart", emoji:"👃",  spanish:"nariz",  a:["nose",  "hand", "foot"],  ok:0 },
+  { type:"bodypart", emoji:"👅",  spanish:"boca",   a:["ear",   "mouth","nose"],  ok:1 },
+  { type:"bodypart", emoji:"✋",  spanish:"mano",   a:["hand",  "foot", "arm"],   ok:0 },
+  { type:"bodypart", emoji:"🦶",  spanish:"pie",    a:["knee",  "hand", "foot"],  ok:2 },
+  { type:"bodypart", emoji:"💪",  spanish:"brazo",  a:["leg",   "arm",  "head"],  ok:1 },
+  { type:"bodypart", emoji:"🦵",  spanish:"pierna", a:["arm",   "hand", "leg"],   ok:2 },
+
+  // ── ENGLISH NUMBER NAMES (7) ── count the stars and pick English number ─────
+  { type:"numbername", count:1, a:["one",   "two",   "three"], ok:0 },
+  { type:"numbername", count:2, a:["three", "two",   "one"],   ok:1 },
+  { type:"numbername", count:3, a:["two",   "four",  "three"], ok:2 },
+  { type:"numbername", count:4, a:["four",  "three", "six"],   ok:0 },
+  { type:"numbername", count:5, a:["six",   "five",  "four"],  ok:1 },
+  { type:"numbername", count:6, a:["five",  "six",   "seven"], ok:1 },
+  { type:"numbername", count:7, a:["eight", "nine",  "seven"], ok:2 },
 ];
 
 // ================================================================
@@ -663,18 +777,37 @@ function loadQuestion(qObj) {
     emojiArea.textContent = qObj.english;
     qText.style.display = 'block';
     qText.textContent = qObj.text;
+  } else if (qObj.type === 'color') {
+    emojiArea.style.display = 'block';
+    emojiArea.style.fontSize = '72px';
+    emojiArea.textContent = qObj.emoji;
+    qText.style.display = 'block';
+    qText.textContent = '¿Qué color es en inglés? (= ' + qObj.spanish + ')';
+  } else if (qObj.type === 'bodypart') {
+    emojiArea.style.display = 'block';
+    emojiArea.style.fontSize = '64px';
+    emojiArea.textContent = qObj.emoji;
+    qText.style.display = 'block';
+    qText.textContent = 'En inglés, ' + qObj.spanish + ' se dice...';
+  } else if (qObj.type === 'numbername') {
+    emojiArea.style.display = 'block';
+    emojiArea.style.fontSize = '40px';
+    emojiArea.textContent = '🌟'.repeat(qObj.count);
+    qText.style.display = 'block';
+    qText.textContent = '¿Cómo se dice ' + qObj.count + ' en inglés?';
   } else {
     emojiArea.style.display = 'none';
     qText.style.display     = 'block';  // Show text, and we'll also speak it
     qText.textContent       = qObj.text;
   }
 
+  const isWordBtn = ['color', 'bodypart', 'numbername'].includes(qObj.type);
   btns.forEach((btn, i) => {
     btn.textContent = qObj.a[i];
     btn.disabled    = false;
     btn.className   = 'btn btn-' + ['a', 'b', 'c'][i];
-    // Make emoji answers bigger
-    btn.style.fontSize = (qObj.type === 'read' && qObj.a[i].length <= 4) ? '36px' : '26px';
+    // Size: word answers smaller, emoji answers bigger
+    btn.style.fontSize = isWordBtn ? '22px' : (qObj.type === 'read' && qObj.a[i].length <= 4) ? '36px' : '26px';
   });
 
   // Speak the question aloud
@@ -694,6 +827,16 @@ function speakQuestion(qObj) {
   } else if (qObj.type === 'translation') {
     textToSpeak = qObj.english;
     language = 'en-US';
+  } else if (qObj.type === 'color') {
+    textToSpeak = '¿Qué color es en inglés? ' + qObj.spanish;
+    language = 'es-ES';
+  } else if (qObj.type === 'bodypart') {
+    textToSpeak = 'En inglés, ' + qObj.spanish + ' se dice...';
+    language = 'es-ES';
+  } else if (qObj.type === 'numbername') {
+    const esNums = ['','uno','dos','tres','cuatro','cinco','seis','siete'];
+    textToSpeak = '¿Cómo se dice ' + esNums[qObj.count] + ' en inglés?';
+    language = 'es-ES';
   } else {
     textToSpeak = qObj.text;
     language = 'es-ES';
@@ -743,7 +886,20 @@ function answer(idx) {
   }
 }
 
+function showEncouragement() {
+  const msgs = ['¡Muy bien!','¡Fantástico!','¡Eres una campeona!','¡Increíble!','¡Genial!','¡Excelente!'];
+  const msg = msgs[Math.floor(Math.random() * msgs.length)];
+  const el = document.createElement('div');
+  el.className = 'encouragement';
+  el.textContent = msg;
+  el.style.left = (25 + Math.random() * 45) + '%';
+  document.getElementById('game').appendChild(el);
+  setTimeout(() => el.remove(), 1600);
+}
+
 function onCorrect() {
+  showEncouragement();
+
   // Add coin
   state.coins++;
   document.getElementById('coin-count').textContent = state.coins;
