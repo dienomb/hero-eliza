@@ -20,7 +20,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100svh;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    #game-outer {
+      line-height: 0;
     }
 
     #game {
@@ -355,6 +361,7 @@
 </head>
 <body>
 
+<div id="game-outer">
 <div id="game">
 
   <!-- ===== WORLD ===== -->
@@ -508,6 +515,7 @@
   </div>
 
 </div><!-- /game -->
+</div><!-- /game-outer -->
 
 <script>
 // ================================================================
@@ -1113,9 +1121,27 @@ function playVictorySound() {
 }
 
 // ================================================================
+// RESPONSIVE SCALING
+// ================================================================
+function scaleGame() {
+  const scale = Math.min(
+    window.innerWidth  / 900,
+    window.innerHeight / 580
+  );
+  const game  = document.getElementById('game');
+  const outer = document.getElementById('game-outer');
+  game.style.transform       = `scale(${scale})`;
+  game.style.transformOrigin = 'top left';
+  outer.style.width          = Math.round(900 * scale) + 'px';
+  outer.style.height         = Math.round(580 * scale) + 'px';
+}
+
+window.addEventListener('resize', scaleGame);
+
+// ================================================================
 // START
 // ================================================================
-window.addEventListener('load', initGame);
+window.addEventListener('load', () => { scaleGame(); initGame(); });
 </script>
 </body>
 </html>
